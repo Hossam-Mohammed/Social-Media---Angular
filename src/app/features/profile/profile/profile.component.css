@@ -1,0 +1,12 @@
+@theme {
+  --font-sans: 'Lexend', ui-sans-serif, system-ui, sans-serif;
+  --color-mainColor: #1b6ef3;
+  --color-secondColor: #0b3a8f;
+}
+@layer components {
+  .btn-active {
+    background-color: #fff;
+    color: var(--color-mainColor);
+    box-shadow: 0 1px 3px rgb(15 23 42 / 0.08);
+  }
+}

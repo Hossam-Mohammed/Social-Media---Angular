@@ -1,0 +1,241 @@
+<!-- ===== Loading skeleton ===== -->
+<ng-template #skeleton>
+  @for (n of [1, 2]; track n) {
+  <div class="mb-2 overflow-hidden rounded-2xl bg-white p-4 shadow-sm">
+    <div class="flex animate-pulse items-center gap-3">
+      <div class="size-11 rounded-full bg-slate-200"></div>
+      <div class="flex flex-col gap-2">
+        <div class="h-3 w-32 rounded bg-slate-200"></div>
+        <div class="h-2.5 w-20 rounded bg-slate-200"></div>
+      </div>
+    </div>
+    <div class="mt-4 flex animate-pulse flex-col gap-2">
+      <div class="h-3 w-full rounded bg-slate-200"></div>
+      <div class="h-3 w-2/3 rounded bg-slate-200"></div>
+      <div class="mt-2 h-48 w-full rounded-xl bg-slate-200"></div>
+    </div>
+  </div>
+  }
+</ng-template>
+
+<!-- ===== Post options menu (used by both post layouts) ===== -->
+<ng-template #postMenu let-item>
+  <div class="relative">
+    <button type="button" aria-label="Post options" (click)="toggleMenu(item._id)"
+      class="flex size-8 shrink-0 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100">
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="5" cy="12" r="1" />
+        <circle cx="12" cy="12" r="1" />
+        <circle cx="19" cy="12" r="1" />
+      </svg>
+    </button>
+
+    @if (openMenuId() === item._id) {
+    <!-- click-away layer -->
+    <div class="fixed inset-0 z-10" (click)="openMenuId.set(null)"></div>
+
+    <div class="absolute right-0 top-10 z-20 w-48 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+      <!-- Save / Unsave: everyone -->
+      <button type="button" (click)="toggleBookmark(item)"
+        class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium hover:bg-slate-50">
+        <svg class="size-4" viewBox="0 0 24 24" [attr.fill]="item.bookmarked ? 'currentColor' : 'none'"
+          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+        </svg>
+        {{ item.bookmarked ? 'Unsave post' : 'Save post' }}
+      </button>
+
+      <!-- Edit / Delete: post owner only -->
+      @if (isOwner(item)) {
+      <button type="button" (click)="startEdit(item)"
+        class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium hover:bg-slate-50">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+        </svg>
+        Edit post
+      </button>
+      <button type="button" (click)="deletePost(item)"
+        class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50">
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6" />
+        </svg>
+        Delete post
+      </button>
+      }
+    </div>
+    }
+  </div>
+</ng-template>
+
+@if (loading()) {
+<ng-container [ngTemplateOutlet]="skeleton" />
+} @else {
+@for (item of posts(); track item._id) {
+<div class="flex flex-col gap-3 sm:gap-4 mb-3">
+  <article class="flex flex-col rounded-2xl bg-white shadow-sm border border-slate-100/80 overflow-hidden">
+    <!-- Post Header -->
+    <header class="flex items-start justify-between gap-3 p-4">
+      <div [routerLink]="['/users', item.user._id, 'profile']" class="flex min-w-0 cursor-pointer items-center gap-3">
+        <span class="relative size-11 shrink-0 overflow-hidden rounded-full bg-slate-200 ring-1 ring-slate-200">
+          <img [src]="item.user.photo || './Images/default-profile.png'"
+            (error)="$any($event.target).src = './Images/default-profile.png'" alt=""
+            class="absolute inset-0 size-full object-cover" />
+        </span>
+        <div class="flex min-w-0 flex-col">
+          <p class="text-sm font-bold text-slate-900 leading-snug">
+            {{ item.user.name }}
+            @if (item.isShare) {
+            <span class="font-normal text-slate-500"> shared a post</span>
+            }
+          </p>
+          <p class="flex items-center gap-1.5 text-xs text-slate-500">
+            <span>&#64;{{ item.user.username || item.user.name.toLowerCase().replace(' ', '_') }}</span>
+            <span aria-hidden="true">·</span>
+            <time>{{ getTimeAgo(item.createdAt) }}</time>
+            <span aria-hidden="true">·</span>
+            <span class="flex items-center gap-1">
+              <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+              </svg>
+              {{ item.privacy }}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Right Actions: Bookmark icon + Menu -->
+      <div class="flex items-center gap-1">
+        @if (item.bookmarked) {
+        <svg class="size-5 text-mainColor" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+        </svg>
+        }
+
+        <ng-container [ngTemplateOutlet]="postMenu" [ngTemplateOutletContext]="{ $implicit: item }" />
+      </div>
+    </header>
+
+    <!-- Body / edit textarea -->
+    @if (editingId() === item._id) {
+    <div class="px-4 pb-3">
+      <textarea rows="4" [value]="editText()" (input)="editText.set($any($event.target).value)"
+        class="w-full rounded-2xl border border-slate-300 p-3 text-sm outline-none focus:border-mainColor"></textarea>
+      <div class="mt-2 flex justify-end gap-2">
+        <button type="button" (click)="cancelEdit()"
+          class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold">
+          Cancel
+        </button>
+        <button type="button" (click)="saveEdit(item)" [disabled]="busyId() === item._id || !editText().trim()"
+          class="rounded-full bg-mainColor px-5 py-2 text-sm font-semibold text-white disabled:opacity-50">
+          Save
+        </button>
+      </div>
+    </div>
+    } @else if (item.body?.trim()) {
+    <div class="px-4 pb-3 text-sm sm:text-base text-slate-800 leading-relaxed break-words" dir="auto">
+      {{ item.body }}
+    </div>
+    }
+
+    <!-- Post Image -->
+    @if (item.image) {
+    <div class="flex justify-center bg-slate-100 overflow-hidden">
+      <img [src]="item.image" alt="Post image" class="max-h-[560px] w-full object-cover" loading="lazy" />
+    </div>
+    }
+
+    <!-- Original post inside a share -->
+    @if (item.isShare) {
+    @if (item.sharedPost; as shared) {
+    <div class="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-200">
+      <div class="flex items-center gap-2 p-3">
+        <img [src]="shared.user.photo || './Images/default-profile.png'" alt=""
+          class="size-8 rounded-full object-cover" />
+        <div class="flex flex-col">
+          <strong class="text-sm font-bold">{{ shared.user.name }}</strong>
+          <time class="text-xs text-slate-500">{{ getTimeAgo(shared.createdAt) }}</time>
+        </div>
+      </div>
+      @if (shared.body) {
+      <p class="px-3 pb-3 text-sm text-slate-800" dir="auto">{{ shared.body }}</p>
+      }
+      @if (shared.image) {
+      <img [src]="shared.image" alt="Shared post image" class="max-h-[420px] w-full object-cover" />
+      }
+    </div>
+    } @else {
+    <p class="mx-4 mb-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+      This post is no longer available.
+    </p>
+    }
+    }
+
+    <!-- Metrics Bar (Matching Image 1) -->
+    <div class="flex items-center justify-between px-4 py-3 text-xs sm:text-sm text-slate-500">
+      <div class="flex items-center gap-1.5 font-medium">
+        <span class="flex size-5 items-center justify-center rounded-full bg-blue-600 text-white text-[10px]">
+          <i class="fa-solid fa-thumbs-up"></i>
+        </span>
+        <span>{{ item.likesCount }} likes</span>
+      </div>
+
+      <div class="flex items-center gap-3 font-medium">
+        <span>{{ item.sharesCount }} shares</span>
+        <span>{{ item.commentsCount }} comments</span>
+        <a [routerLink]="['/posts', item._id || item.id]"
+          class="font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+          View details
+        </a>
+      </div>
+    </div>
+
+    <!-- Action Buttons Bar (Matching Image 1) -->
+    <div
+      class="flex items-center justify-around border-y border-slate-100 py-1 px-2 text-xs sm:text-sm text-slate-600 font-semibold mb-3">
+      <button type="button" (click)="toggleLike(item)" [disabled]="likingId() === item._id"
+        class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer"
+        [class.text-blue-600]="isLiked(item)">
+        <i class="fa-thumbs-up" [class.fa-solid]="isLiked(item)" [class.fa-regular]="!isLiked(item)"></i>
+        Like
+      </button>
+
+      <button type="button" (click)="commentsRef.toggleComments()"
+        class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer hover:text-blue-600">
+        <i class="fa-regular fa-comment"></i>
+        Comment
+      </button>
+
+      <button type="button" (click)="sharePost(item)" [disabled]="sharingId() === item._id"
+        class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer hover:text-blue-600">
+        <i class="fa-solid fa-share"></i>
+        Share
+      </button>
+    </div>
+
+    <!-- Shared Comments Component (Matching Image 1) -->
+    <app-comments #commentsRef [postId]="item._id || item.id" [topComment]="item.topComment"
+      [commentsCount]="item.commentsCount"></app-comments>
+  </article>
+</div>
+} @empty {
+<p class="rounded-2xl border border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500">
+  No posts here yet.
+</p>
+}
+
+@if (loadingMore()) {
+<ng-container [ngTemplateOutlet]="skeleton" />
+}
+}
+
+<div #sentinel class="h-px"></div>
+
+@if (!hasMore() && posts().length > 0) {
+<p class="py-4 text-center text-xs text-slate-400">You’re all caught up.</p>
+}

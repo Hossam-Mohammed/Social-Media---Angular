@@ -1,0 +1,98 @@
+<aside class="flex flex-col gap-3 rounded-2xl bg-white p-3 shadow-sm sm:p-4">
+  <!-- Header -->
+  <header class="flex items-center justify-between gap-3 px-1 pt-1">
+    <div class="flex items-center gap-2.5 text-lg font-bold text-slate-900">
+      <span class="text-mainColor"
+        ><svg
+          class="size-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="9" cy="8" r="3.5" />
+          <path
+            d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"
+          /></svg
+      ></span>
+      Suggested Friends
+    </div>
+    <span
+      class="flex h-7 min-w-7 items-center justify-center rounded-full bg-slate-100 px-2 text-sm font-bold text-slate-700"
+      >{{ suggestions().length }}</span
+    >
+  </header>
+
+  <!-- Search -->
+  <div class="relative flex items-center">
+    <span class="pointer-events-none absolute left-4 text-slate-400">
+      <svg
+        class="size-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m21 21-4.3-4.3" />
+      </svg>
+    </span>
+    <input
+      type="search"
+      placeholder="Search friends..."
+      aria-label="Search friends"
+      class="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-mainColor focus:bg-white focus:ring-4 focus:ring-mainColor/10"
+    />
+  </div>
+
+  <!-- List -->
+  <ul class="flex flex-col gap-3">
+    @for (suggestion of suggestions(); track suggestion._id) {
+      <li class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3">
+        <div class="flex items-center gap-3">
+          <span
+            [routerLink]="['/users', suggestion._id, 'profile']"
+            class="relative size-12 shrink-0 overflow-hidden rounded-full bg-slate-200"
+          >
+            <img [src]="suggestion.photo" alt="" class="absolute inset-0 size-full object-cover" />
+          </span>
+          <div
+            [routerLink]="['/users', suggestion._id, 'profile']"
+            class="flex min-w-0 flex-1 flex-col"
+          >
+            <span class="truncate text-base font-bold leading-tight text-slate-900">{{
+              suggestion.name
+            }}</span>
+            <span class="truncate text-sm text-slate-500"> {{ suggestion.username }} </span>
+          </div>
+          <button
+            type="button"
+            class="flex shrink-0 items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-2 text-sm font-semibold text-mainColor hover:bg-blue-100"
+            (click)="followUser(suggestion._id)"
+          >
+            <svg
+              class="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="9" cy="8" r="3.5" />
+              <path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6" />
+            </svg>
+            Follow
+          </button>
+        </div>
+        <span class="w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
+          >{{ suggestion.followersCount }} followers</span
+        >
+      </li>
+    }
+  </ul>
+</aside>

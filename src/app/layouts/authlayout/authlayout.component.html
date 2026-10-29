@@ -1,0 +1,105 @@
+<section class="mb-16"><app-navbar [flag]="false"></app-navbar>></section>
+<main class="min-h-screen flex items-center justify-center px-4 py-8 lg:px-12">
+  <!-- Flex container: column on mobile, row on desktop -->
+  <div
+    class="w-full max-w-6xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16"
+  >
+    <!-- LEFT: intro + about. Order 2 on mobile (below the form), order 1 on desktop -->
+    <section class="order-2 lg:order-1 flex flex-col gap-6 lg:flex-1 text-center lg:text-start">
+      <!-- Desktop-only heading (on mobile it lives inside the form card) -->
+      <div class="hidden lg:flex flex-col gap-4">
+        <h1 class="text-7xl font-extrabold text-mainColor tracking-tight">Route Posts</h1>
+        <p class="text-3xl text-slate-800 leading-snug max-w-xl">
+          Connect with friends and the world around you on Route Posts.
+        </p>
+      </div>
+
+      <!-- About card -->
+      <article
+        class="flex flex-col gap-3 bg-white/80 border border-indigo-200 rounded-3xl p-5 sm:p-6 shadow-md"
+      >
+        <h2 class="text-sm font-bold uppercase tracking-[0.25em] text-mainColor">
+          About Route Academy
+        </h2>
+        <h3 class="text-xl sm:text-2xl lg:text-xl font-bold text-slate-900">
+          Egypt's Leading IT Training Center Since 2012
+        </h3>
+        <p class="text-slate-700 leading-7 lg:text-[0.95rem]">
+          Route Academy is the premier IT training center in Egypt, established in 2012. We
+          specialize in delivering high-quality training courses in programming, web development,
+          and application development. We've identified the unique challenges people may face when
+          learning new technology and made efforts to provide strategies to overcome them.
+        </p>
+
+        <!-- Stats: 2 per row on mobile, 3 per row on desktop (flex-wrap + basis) -->
+        <ul class="flex flex-wrap gap-3 mt-1">
+          <li
+            class="basis-[calc(50%-0.375rem)] lg:basis-[calc(33.333%-0.5rem)] flex flex-col items-center lg:items-start justify-center rounded-2xl border border-indigo-200 bg-blue-50/70 px-4 py-3"
+          >
+            <span class="text-lg font-bold text-mainColor">2012</span>
+            <span class="text-xs font-semibold uppercase text-slate-700">Founded</span>
+          </li>
+          <li
+            class="basis-[calc(50%-0.375rem)] lg:basis-[calc(33.333%-0.5rem)] flex flex-col items-center lg:items-start justify-center rounded-2xl border border-indigo-200 bg-blue-50/70 px-4 py-3"
+          >
+            <span class="text-lg font-bold text-mainColor">40K+</span>
+            <span class="text-xs font-semibold uppercase text-slate-700">Graduates</span>
+          </li>
+          <li
+            class="basis-[calc(50%-0.375rem)] lg:basis-[calc(33.333%-0.5rem)] flex flex-col items-center lg:items-start justify-center rounded-2xl border border-indigo-200 bg-blue-50/70 px-4 py-3"
+          >
+            <span class="text-lg font-bold text-mainColor">50+</span>
+            <span class="text-xs font-semibold uppercase text-slate-700 text-center lg:text-start"
+              >Partner companies</span
+            >
+          </li>
+          <li
+            class="basis-[calc(50%-0.375rem)] lg:basis-[calc(33.333%-0.5rem)] flex flex-col items-center lg:items-start justify-center rounded-2xl border border-indigo-200 bg-blue-50/70 px-4 py-3"
+          >
+            <span class="text-lg font-bold text-mainColor">5</span>
+            <span class="text-xs font-semibold uppercase text-slate-700">Branches</span>
+          </li>
+          <li
+            class="basis-[calc(50%-0.375rem)] lg:basis-[calc(33.333%-0.5rem)] flex flex-col items-center lg:items-start justify-center rounded-2xl border border-indigo-200 bg-blue-50/70 px-4 py-3"
+          >
+            <span class="text-lg font-bold text-mainColor">20</span>
+            <span class="text-xs font-semibold uppercase text-slate-700 text-center lg:text-start"
+              >Diplomas available</span
+            >
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- RIGHT: form card. Order 1 on mobile (first), order 2 on desktop -->
+    <section
+      class="order-1 lg:order-2 w-full lg:w-[34rem] lg:shrink-0 bg-white rounded-3xl shadow-lg p-5 sm:p-8 flex flex-col gap-5"
+    >
+      <!-- Mobile-only heading -->
+      <header class="lg:hidden text-center flex flex-col gap-1">
+        <h1 class="text-4xl font-extrabold text-mainColor">Route Posts</h1>
+        <p class="text-lg text-slate-800 leading-snug">
+          Connect with friends and the world around you on Route Posts.
+        </p>
+      </header>
+
+      <!-- Tabs -->
+      <nav class="flex gap-1 p-1 bg-slate-100 rounded-2xl text-sm font-bold" aria-label="Auth tabs">
+        <a
+          routerLink="/login"
+          routerLinkActive="bg-white text-mainColor shadow"
+          class="flex-1 text-center py-2.5 rounded-xl text-slate-700 hover:text-mainColor duration-200"
+          >Login</a
+        >
+        <a
+          routerLink="/register"
+          aria-current="page"
+          routerLinkActive="bg-white text-mainColor shadow"
+          class="flex-1 text-center py-2.5 rounded-xl text-slate-700 hover:text-mainColor duration-200"
+          >Register</a
+        >
+      </nav>
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</main>

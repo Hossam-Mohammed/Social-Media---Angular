@@ -1,0 +1,479 @@
+<!-- ========== PAGE ========== -->
+<main
+  class="mx-auto flex max-w-[1568px] lg:w-4/5 flex-col gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 lg:px-8"
+>
+  <!-- ===== Profile card ===== -->
+  <section class="overflow-hidden rounded-3xl bg-white shadow-sm">
+    <!-- Cover -->
+    <div class="relative h-44 bg-gradient-to-r from-slate-900 to-slate-400/70 sm:h-56 lg:h-72">
+      <button
+        type="button"
+        class="absolute right-3 top-3 flex items-center gap-1.5 rounded-lg bg-black/40 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-black/55 sm:right-5 sm:top-5 sm:text-sm"
+      >
+        <svg
+          class="size-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+          <circle cx="12" cy="13" r="3.5" />
+        </svg>
+        Add cover
+      </button>
+    </div>
+
+    <!-- Inner card overlapping the cover -->
+    <div
+      class="relative -mt-16 mx-3 flex flex-col gap-4 rounded-3xl bg-white p-4 shadow-[0_-6px_24px_rgb(15_23_42/0.12)] sm:-mt-20 sm:mx-6 sm:gap-6 sm:p-6 lg:mx-10 lg:-mt-24 lg:p-9"
+    >
+      <!-- Identity + stats -->
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+        <!-- Avatar + name -->
+        <div class="flex items-center gap-3 sm:gap-5">
+          <div class="relative shrink-0">
+            <div
+              class="relative size-24 overflow-hidden rounded-full border-4 border-white bg-slate-200 shadow-md ring-2 ring-slate-200 sm:size-32 lg:size-36"
+            >
+              <img
+                [src]="userImage()"
+                alt="Profile photo"
+                class="absolute inset-0 size-full object-cover"
+              />
+            </div>
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              class="hidden"
+              (change)="onPhotoSelected($event)"
+            />
+            <button
+              type="button"
+              aria-label="Change photo"
+              (click)="fileInput.click()"
+              [disabled]="isUploading()"
+              class="hover:cursor-grab absolute bottom-0 left-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-secondColor text-black shadow sm:size-9"
+            >
+              @if (isUploading()) {
+                …
+              } @else {
+                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+              }
+            </button>
+            <button
+              type="button"
+              aria-label="Change photo"
+              class="absolute bottom-0 right-0 flex size-8 items-center justify-center rounded-full border-2 border-white bg-mainColor text-white shadow sm:size-9"
+            >
+              <svg
+                class="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+                <circle cx="12" cy="13" r="3.5" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex min-w-0 flex-col items-start gap-1 sm:gap-2">
+            <h1 class="truncate text-xl font-extrabold tracking-tight sm:text-3xl lg:text-5xl"></h1>
+            <p class="text-sm text-slate-500 sm:text-xl">{{ userData()?.username }}</p>
+            <span
+              class="flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-mainColor sm:text-sm"
+            >
+              <svg
+                class="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="9" cy="8" r="3.5" />
+                <path
+                  d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"
+                />
+              </svg>
+              Route Posts member
+            </span>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <ul class="flex gap-2 sm:gap-4">
+          <li
+            class="flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white px-2 py-3 sm:py-5 lg:w-52 lg:flex-none"
+          >
+            <span
+              class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 sm:text-sm"
+              >Followers</span
+            >
+            <span class="text-xl font-extrabold sm:text-4xl">{{ userData()?.followersCount }}</span>
+          </li>
+          <li
+            class="flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white px-2 py-3 sm:py-5 lg:w-52 lg:flex-none"
+          >
+            <span
+              class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 sm:text-sm"
+              >Following</span
+            >
+            <span class="text-xl font-extrabold sm:text-4xl">{{ userData()?.followingCount }}</span>
+          </li>
+          <li
+            class="flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-white px-2 py-3 sm:py-5 lg:w-52 lg:flex-none"
+          >
+            <span
+              class="text-[10px] font-semibold uppercase tracking-wide text-slate-600 sm:text-sm"
+              >Bookmarks</span
+            >
+            <span class="text-xl font-extrabold sm:text-4xl">{{ bookmarksTotal() }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- About + counters -->
+      <div class="flex flex-col gap-3 sm:gap-4 lg:flex-row">
+        <!-- About -->
+        <div
+          class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 lg:min-h-52 lg:flex-[2]"
+        >
+          <h2 class="text-sm font-bold sm:text-base">About</h2>
+          <ul class="flex flex-col gap-2 text-xs text-slate-600 sm:gap-3 sm:text-base">
+            <li class="flex items-center gap-2.5">
+              <svg
+                class="size-4 shrink-0 sm:size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+              <span class="break-all">{{ userData()?.email }}</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <svg
+                class="size-4 shrink-0 sm:size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="9" cy="8" r="3.5" />
+                <path
+                  d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"
+                />
+              </svg>
+              Active on Route Posts
+            </li>
+          </ul>
+        </div>
+
+        <!-- Counters -->
+        <div class="flex flex-col gap-3 sm:gap-4 lg:flex-1">
+          <div
+            class="flex flex-col gap-1 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 sm:p-5"
+          >
+            <span class="text-[11px] font-bold uppercase tracking-wide text-mainColor sm:text-sm"
+              >My posts</span
+            >
+            <span class="text-xl font-extrabold sm:text-3xl">{{ postsTotal() }}</span>
+          </div>
+          <div
+            class="flex flex-col gap-1 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 sm:p-5"
+          >
+            <span class="text-[11px] font-bold uppercase tracking-wide text-mainColor sm:text-sm"
+              >Saved posts</span
+            >
+            <span class="text-xl font-extrabold sm:text-3xl">{{ bookmarksTotal() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Tabs ===== -->
+  <section
+    class="flex flex-col gap-3 rounded-2xl bg-white p-3 shadow-sm sm:p-4 md:flex-row md:items-center md:justify-between"
+  >
+    <div role="tablist" class="flex w-full rounded-xl bg-slate-100 p-1 md:w-auto">
+      <button
+        role="tab"
+        aria-selected="true"
+        data-tab="posts"
+        (click)="_PostsService.selectPostType('my-posts')"
+        [class]="
+          _PostsService.postType() === 'my-posts'
+            ? 'tab-btn btn-active flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 md:flex-none'
+            : 'tab-btn flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 sm:px-5 md:flex-none'
+        "
+      >
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+          <path d="M14 3v5h5M9 13h6M9 17h6" />
+        </svg>
+        My Posts
+      </button>
+      <button
+        role="tab"
+        aria-selected="false"
+        data-tab="saved"
+        (click)="_PostsService.selectPostType('saved')"
+        [class]="
+          _PostsService.postType() === 'saved'
+            ? 'tab-btn btn-active flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold sm:px-5 md:flex-none'
+            : 'tab-btn flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 sm:px-5 md:flex-none'
+        "
+      >
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+        </svg>
+        Saved
+      </button>
+    </div>
+    @if (_PostsService.postType() === 'my-posts') {
+      <span
+        id="tab-count"
+        class="flex size-7 items-center justify-center self-start rounded-full bg-blue-50 text-xs font-bold text-mainColor md:self-auto"
+        >{{ postsTotal() }}</span
+      >
+    } @else {
+      <span
+        id="tab-count"
+        class="flex size-7 items-center justify-center self-start rounded-full bg-blue-50 text-xs font-bold text-mainColor md:self-auto"
+        >{{ bookmarksTotal() }}</span
+      >
+    }
+  </section>
+
+  <!-- ===== Posts panel ===== -->
+  @if (loading()) {
+    @for (n of [1, 2, 3]; track n) {
+      <div class="mb-2 overflow-hidden rounded-2xl bg-white p-4 shadow-sm">
+        <div class="flex animate-pulse items-center gap-3">
+          <div class="size-11 rounded-full bg-slate-200"></div>
+          <div class="flex flex-col gap-2">
+            <div class="h-3 w-32 rounded bg-slate-200"></div>
+            <div class="h-2.5 w-20 rounded bg-slate-200"></div>
+          </div>
+        </div>
+        <div class="mt-4 flex animate-pulse flex-col gap-2">
+          <div class="h-3 w-full rounded bg-slate-200"></div>
+          <div class="h-3 w-2/3 rounded bg-slate-200"></div>
+          <div class="mt-2 h-48 w-full rounded-xl bg-slate-200"></div>
+        </div>
+      </div>
+    }
+  } @else {
+    @for (item of posts(); track item._id) {
+      <div class="flex flex-col gap-3 sm:gap-4 mb-3">
+        <article class="flex flex-col rounded-2xl bg-white shadow-sm border border-slate-100/80 overflow-hidden">
+          <header class="flex items-start justify-between gap-3 p-4">
+            <div
+              class="flex min-w-0 items-center gap-3"
+              [routerLink]="['/users', item.user._id, 'profile']"
+            >
+              <span class="relative size-11 shrink-0 overflow-hidden rounded-full bg-slate-200 ring-1 ring-slate-200">
+                <img
+                  [src]="item.user.photo || './Images/default-profile.png'"
+                  (error)="$any($event.target).src = './Images/default-profile.png'"
+                  alt=""
+                  class="absolute inset-0 size-full object-cover"
+                />
+              </span>
+              <div class="flex min-w-0 flex-col">
+                <p class="text-sm font-bold text-slate-900 leading-snug">
+                  {{ item.user.name }}
+                  @if (item.isShare) {
+                    <span class="font-normal text-slate-500"> shared a post</span>
+                  }
+                </p>
+                <p class="flex items-center gap-1.5 text-xs text-slate-500">
+                  <span>&#64;{{ item.user.username || item.user.name.toLowerCase().replace(' ', '_') }}</span>
+                  <span aria-hidden="true">·</span>
+                  <time>{{ getTimeAgo(item.createdAt) }}</time>
+                  <span aria-hidden="true">·</span>
+                  <span class="flex items-center gap-1">
+                    <svg
+                      class="size-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+                    </svg>
+                    {{ item.privacy }}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Bookmark indicator if saved -->
+            @if (item.bookmarked) {
+              <div class="flex items-center gap-1 text-mainColor">
+                <svg
+                  class="size-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z" />
+                </svg>
+              </div>
+            }
+          </header>
+
+          @if (item.body?.trim()) {
+            <div class="px-4 pb-3 text-sm sm:text-base text-slate-800 leading-relaxed break-words" dir="auto">
+              {{ item.body }}
+            </div>
+          }
+
+          @if (item.image) {
+            <div class="flex justify-center bg-slate-100 overflow-hidden">
+              <img
+                [src]="item.image"
+                alt="Post image"
+                class="max-h-[560px] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          }
+
+          @if (item.isShare) {
+            @if (item.sharedPost; as shared) {
+              <div class="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-200">
+                <div class="flex items-center gap-2 p-3">
+                  <img
+                    [src]="shared.user.photo || './Images/default-profile.png'"
+                    alt=""
+                    class="size-8 rounded-full object-cover"
+                  />
+                  <div class="flex flex-col">
+                    <strong class="text-sm font-bold">{{ shared.user.name }}</strong>
+                    <time class="text-xs text-slate-500">{{ getTimeAgo(shared.createdAt) }}</time>
+                  </div>
+                </div>
+                @if (shared.body) {
+                  <p class="px-3 pb-3 text-sm text-slate-800" dir="auto">{{ shared.body }}</p>
+                }
+                @if (shared.image) {
+                  <img
+                    [src]="shared.image"
+                    alt="Shared post image"
+                    class="max-h-[420px] w-full object-cover"
+                  />
+                }
+              </div>
+            } @else {
+              <p class="mx-4 mb-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+                This post is no longer available.
+              </p>
+            }
+          }
+
+          <!-- Metrics Bar (Matching Image 1) -->
+          <div class="flex items-center justify-between px-4 py-3 text-xs sm:text-sm text-slate-500">
+            <div class="flex items-center gap-1.5 font-medium">
+              <span class="flex size-5 items-center justify-center rounded-full bg-blue-600 text-white text-[10px]">
+                <i class="fa-solid fa-thumbs-up"></i>
+              </span>
+              <span>{{ item.likesCount }} likes</span>
+            </div>
+
+            <div class="flex items-center gap-3 font-medium">
+              <span>{{ item.sharesCount }} shares</span>
+              <span>{{ item.commentsCount }} comments</span>
+              <a [routerLink]="['/posts', item._id || item.id]" class="font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+                View details
+              </a>
+            </div>
+          </div>
+
+          <!-- Action Buttons Bar (Matching Image 1) -->
+          <div class="flex items-center justify-around border-y border-slate-100 py-1 px-2 text-xs sm:text-sm text-slate-600 font-semibold mb-3">
+            <button
+              type="button"
+              (click)="toggleLike(item)"
+              [disabled]="likingId() === item._id"
+              class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer"
+              [class.text-blue-600]="isLiked(item)"
+            >
+              <i class="fa-thumbs-up" [class.fa-solid]="isLiked(item)" [class.fa-regular]="!isLiked(item)"></i>
+              Like
+            </button>
+
+            <button
+              type="button"
+              (click)="commentsRef.toggleComments()"
+              class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer hover:text-blue-600"
+            >
+              <i class="fa-regular fa-comment"></i>
+              Comment
+            </button>
+
+            <button
+              type="button"
+              (click)="sharePost(item)"
+              [disabled]="sharingId() === item._id"
+              class="flex flex-1 items-center justify-center gap-2 py-2 rounded-xl transition hover:bg-slate-50 cursor-pointer hover:text-blue-600"
+            >
+              <i class="fa-solid fa-share"></i>
+              Share
+            </button>
+          </div>
+
+          <!-- Shared Comments Component (Matching Image 1) -->
+          <app-comments
+            #commentsRef
+            [postId]="item._id || item.id"
+            [topComment]="item.topComment"
+            [commentsCount]="item.commentsCount"
+          ></app-comments>
+        </article>
+      </div>
+    } @empty {
+      <p
+        class="rounded-2xl border border-slate-200 bg-white px-5 py-8 text-center text-sm text-slate-500"
+      >
+        No posts here yet.
+      </p>
+    }
+  }
+</main>

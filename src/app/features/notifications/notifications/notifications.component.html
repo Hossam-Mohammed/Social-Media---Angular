@@ -1,0 +1,240 @@
+<main class="mx-auto flex max-w-[1568px] lg:w-4/5 flex-col px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+  <section class="mx-auto flex w-5/6 flex-col overflow-hidden rounded-2xl bg-white shadow-sm">
+    <!-- Header (always visible) -->
+    <header
+      class="flex flex-col gap-4 border-b border-slate-200 p-4 sm:p-6 md:flex-row md:items-start md:justify-between"
+    >
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Notifications</h1>
+          <p class="text-sm text-slate-500 sm:text-base">
+            Realtime updates for likes, comments, shares, and follows.
+          </p>
+        </div>
+
+        <!-- Filters -->
+        <div role="tablist" class="flex items-center gap-2">
+          <button
+            role="tab"
+            type="button"
+            (click)="setFilter('all')"
+            [attr.aria-selected]="filter() === 'all'"
+            [class.bg-mainColor]="filter() === 'all'"
+            [class.text-white]="filter() === 'all'"
+            [class.bg-slate-100]="filter() !== 'all'"
+            [class.text-slate-700]="filter() !== 'all'"
+            class="rounded-full px-5 py-2 text-sm font-semibold sm:px-6"
+          >
+            All
+          </button>
+          <button
+            role="tab"
+            type="button"
+            (click)="setFilter('unread')"
+            [attr.aria-selected]="filter() === 'unread'"
+            [class.bg-mainColor]="filter() === 'unread'"
+            [class.text-white]="filter() === 'unread'"
+            [class.bg-slate-100]="filter() !== 'unread'"
+            [class.text-slate-700]="filter() !== 'unread'"
+            class="rounded-full px-5 py-2 text-sm font-semibold hover:bg-slate-200 sm:px-6"
+          >
+            Unread
+            @if (unreadCount() > 0) {
+              ({{ unreadCount() }})
+            }
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="markAllAsRead()"
+        [disabled]="unreadCount() === 0"
+        class="flex items-center justify-center gap-2 self-stretch rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-500 enabled:text-slate-700 enabled:hover:bg-slate-100 disabled:cursor-not-allowed md:self-auto"
+      >
+        <svg
+          class="size-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m2 13 4 4L16 7M12 17l1 1L22 8" />
+        </svg>
+        Mark all as read
+      </button>
+    </header>
+
+    <!-- Body: only this part switches -->
+    <div class="p-3 sm:p-5">
+      @if (resMessage) {
+        <p
+          class="mb-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600"
+        >
+          {{ resMessage }}
+        </p>
+      }
+      <p class="text-xs text-slate-400">
+        loaded: {{ notifications().length }} · cards: {{ cards().length }} · visible:
+        {{ visibleCards().length }} · filter: {{ filter() }}
+      </p>
+      @if (loading()) {
+        <!-- Skeleton -->
+        <ul class="flex flex-col gap-3" aria-busy="true" aria-label="Loading notifications">
+          @for (n of [1, 2, 3, 4]; track n) {
+            <li
+              class="flex animate-pulse items-start justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:gap-4 sm:p-5"
+            >
+              <div class="size-11 shrink-0 rounded-full bg-slate-200 sm:size-14"></div>
+              <div class="flex min-w-0 flex-1 flex-col gap-2 pt-1">
+                <div class="h-3.5 w-3/4 rounded bg-slate-200"></div>
+                <div class="h-3 w-1/2 rounded bg-slate-200"></div>
+              </div>
+              <div class="h-3 w-8 shrink-0 rounded bg-slate-200"></div>
+            </li>
+          }
+        </ul>
+      } @else if (visibleCards().length > 0) {
+        <ul class="flex flex-col gap-3">
+          @for (item of visibleCards(); track item.id) {
+            <li
+              [attr.data-read]="item.read"
+              class="group flex items-start justify-between gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-3 data-[read=true]:border-slate-200 data-[read=true]:bg-white sm:gap-4 sm:p-5"
+            >
+              <!-- Avatar + type badge -->
+              <div class="relative flex shrink-0 flex-col items-center">
+                <span class="relative size-11 overflow-hidden rounded-full bg-slate-300 sm:size-14">
+                  @if (item.avatar) {
+                    <img
+                      [src]="item.avatar"
+                      [alt]="item.actor.name"
+                      class="absolute inset-0 size-full object-cover"
+                    />
+                  }
+                </span>
+                <span
+                  class="-mt-1 flex size-8 items-center justify-center self-start rounded-full bg-white shadow-sm sm:ml-2 sm:mt-1"
+                >
+                  @switch (item.type) {
+                    @case ('like') {
+                      <svg
+                        class="size-4 text-rose-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 0 0-7.4 7.4L12 21.8l8.8-8.8a5.2 5.2 0 0 0 0-7.4z"
+                        />
+                      </svg>
+                    }
+                    @case ('share') {
+                      <svg
+                        class="size-4 text-mainColor"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m17 2 4 4-4 4" />
+                        <path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4" />
+                        <path d="M21 13v2a3 3 0 0 1-3 3H3" />
+                      </svg>
+                    }
+                    @case ('follow') {
+                      <svg
+                        class="size-4 text-mainColor"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="9" cy="8" r="3.5" />
+                        <path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6" />
+                      </svg>
+                    }
+                    @default {
+                      <svg
+                        class="size-4 text-mainColor"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.5-5.6A8.5 8.5 0 1 1 21 12z" />
+                      </svg>
+                    }
+                  }
+                </span>
+              </div>
+
+              <!-- Text + action -->
+              <div class="flex min-w-0 flex-1 flex-col gap-1">
+                <p
+                  [routerLink]="['/users', item.actor._id, 'profile']"
+                  class="text-sm text-slate-800 sm:text-base"
+                >
+                  @if (item.actor.name) {
+                    <strong class="font-bold text-slate-900">{{ item.actor.name }}</strong>
+                    {{ item.action }}
+                  } @else {
+                    {{ item.message }}
+                  }
+                </p>
+                @if (item.preview) {
+                  <p class="truncate text-sm text-slate-600 sm:text-base">{{ item.preview }}</p>
+                }
+                @if (!item.read) {
+                  <button
+                    type="button"
+                    (click)="markNotificationAsRead(item.id)"
+                    class="mt-1 flex w-fit items-center gap-1.5 rounded-lg border border-blue-100 bg-white px-3 py-1.5 text-xs font-semibold text-mainColor hover:bg-blue-50 sm:text-sm"
+                  >
+                    <svg
+                      class="size-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="m5 12 5 5 9-10" />
+                    </svg>
+                    Mark as read
+                  </button>
+                }
+              </div>
+
+              <!-- Time + unread dot -->
+              <div class="flex shrink-0 items-center gap-3 text-xs text-slate-500 sm:text-sm">
+                <time>{{ item.time }}</time>
+                <span
+                  class="size-1.5 rounded-full bg-mainColor group-data-[read=true]:invisible"
+                  aria-label="Unread"
+                ></span>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p
+          class="flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-10 text-sm text-slate-500 sm:py-12"
+        >
+          {{ filter() === 'unread' ? 'No unread notifications.' : 'No notifications yet.' }}
+        </p>
+      }
+    </div>
+  </section>
+</main>

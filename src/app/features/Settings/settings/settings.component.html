@@ -1,0 +1,177 @@
+<!-- ========== PAGE ========== -->
+<main class="mx-auto flex max-w-[1568px] lg:w-4/5 justify-center px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+  <section
+    class="flex w-full max-w-[840px] flex-col gap-5 rounded-2xl bg-white p-4 shadow-sm sm:gap-6 sm:p-[30px]"
+  >
+    <!-- Heading -->
+    <header class="flex items-center gap-3 sm:gap-4">
+      <span
+        class="flex size-11 shrink-0 items-center justify-center rounded-full bg-blue-50 text-mainColor sm:size-12"
+      >
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="8" cy="16" r="4" />
+          <path d="m11 13 9-9M16 8l3 3M14 10l2 2" />
+        </svg>
+      </span>
+      <div class="flex min-w-0 flex-col">
+        <h1 class="text-xl font-bold tracking-tight sm:text-3xl">Change Password</h1>
+        <p class="text-sm text-slate-500 sm:text-base">
+          Keep your account secure by using a strong password.
+        </p>
+      </div>
+    </header>
+
+    <!-- Form -->
+    <form
+      [formGroup]="changePasswordForm"
+      class="flex flex-col gap-4"
+      (ngSubmit)="changePassword()"
+    >
+      <!-- Old Password -->
+      <div>
+        @let oldPassFormControl = changePasswordForm.get('oldPassword');
+        <div class="relative mb-1">
+          <svg
+            class="absolute start-4 top-1/2 -translate-y-1/2 size-5 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.03 5.9c-.55-.1-1.14.04-1.54.44L11.25 16.5H9v2.25H6.75V21H3v-2.9c0-.4.16-.78.44-1.06l5.65-5.65c.4-.4.54-.99.44-1.54a6 6 0 1 1 11.97-.6Z"
+            />
+          </svg>
+          <input
+            type="password"
+            name="oldPassword"
+            formControlName="oldPassword"
+            placeholder="Old Password"
+            autocomplete="Old Password"
+            class="w-full ps-12 pe-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 placeholder:text-slate-500 outline-none focus:border-mainColor focus:ring-2 focus:ring-mainColor/20 duration-200"
+          />
+        </div>
+        @if (oldPassFormControl?.errors && oldPassFormControl?.touched) {
+          <div
+            class="p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft"
+            role="alert"
+          >
+            @if (oldPassFormControl?.getError('required')) {
+              <p class="font-medium">Password is Required</p>
+            }
+            @if (oldPassFormControl?.getError('pattern')) {
+              <p class="font-medium">
+                Password is not valid <span class="text-gray-500">Ex:AdamJohn@12</span>
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Password -->
+      <div>
+        @let passFormControl = changePasswordForm.get('password');
+        <div class="relative mb-1">
+          <svg
+            class="absolute start-4 top-1/2 -translate-y-1/2 size-5 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.03 5.9c-.55-.1-1.14.04-1.54.44L11.25 16.5H9v2.25H6.75V21H3v-2.9c0-.4.16-.78.44-1.06l5.65-5.65c.4-.4.54-.99.44-1.54a6 6 0 1 1 11.97-.6Z"
+            />
+          </svg>
+          <input
+            type="password"
+            name="password"
+            formControlName="password"
+            placeholder="Password"
+            autocomplete="new-password"
+            class="w-full ps-12 pe-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 placeholder:text-slate-500 outline-none focus:border-mainColor focus:ring-2 focus:ring-mainColor/20 duration-200"
+          />
+        </div>
+        @if (passFormControl?.errors && passFormControl?.touched) {
+          <div
+            class="p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft"
+            role="alert"
+          >
+            @if (passFormControl?.getError('required')) {
+              <p class="font-medium">Password is Required</p>
+            }
+            @if (passFormControl?.getError('pattern')) {
+              <p class="font-medium">
+                Password is not valid <span class="text-gray-500">Ex:AdamJohn@12</span>
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Confirm password -->
+      <div>
+        @let rePassFormControl = changePasswordForm.get('rePassword');
+        <div class="relative mb-1">
+          <svg
+            class="absolute start-4 top-1/2 -translate-y-1/2 size-5 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.03 5.9c-.55-.1-1.14.04-1.54.44L11.25 16.5H9v2.25H6.75V21H3v-2.9c0-.4.16-.78.44-1.06l5.65-5.65c.4-.4.54-.99.44-1.54a6 6 0 1 1 11.97-.6Z"
+            />
+          </svg>
+          <input
+            type="password"
+            name="rePassword"
+            formControlName="rePassword"
+            placeholder="Confirm password"
+            autocomplete="new-password"
+            class="w-full ps-12 pe-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 placeholder:text-slate-500 outline-none focus:border-mainColor focus:ring-2 focus:ring-mainColor/20 duration-200"
+          />
+        </div>
+        @if (
+          rePassFormControl?.errors && (rePassFormControl?.dirty || rePassFormControl?.touched)
+        ) {
+          <div
+            class="p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft"
+            role="alert"
+          >
+            @if (changePasswordForm.getError('confirmPassword')) {
+              <p class="font-medium">Confirm password is not match password</p>
+            }
+            @if (rePassFormControl?.getError('required')) {
+              <p class="font-medium">Confirm password is Required</p>
+            }
+            @if (rePassFormControl?.getError('pattern')) {
+              <p class="font-medium">
+                Confirm password is not valid <span class="text-gray-500">Ex:Adam John</span>
+              </p>
+            }
+          </div>
+        }
+      </div>
+
+      <button [disabled]="changePasswordForm.invalid" class="form-btn mt-1 py-3.5">
+        Change Password
+      </button>
+    </form>
+  </section>
+</main>

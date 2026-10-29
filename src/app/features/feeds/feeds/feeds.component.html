@@ -1,0 +1,22 @@
+<!-- feed.component.html : layout only.
+     The order / width / sticky classes sit on the component tags because
+     the host element is the flex item inside <main>. -->
+<main
+  class="mx-auto flex max-w-[1568px] lg:w-4/5 lg:w-4/5 flex-col gap-3 px-3 py-3 sm:px-6 sm:py-6 lg:flex-row lg:items-start lg:gap-6 lg:px-8"
+>
+  <!-- Left: filters -->
+  <app-left-side class="order-1 block lg:sticky lg:top-24 lg:w-64 lg:shrink-0"></app-left-side>
+
+  <!-- Right: suggested friends -->
+  <app-right-side
+    class="order-2 block lg:sticky lg:top-24 lg:order-3 lg:w-80 lg:shrink-0"
+  ></app-right-side>
+
+  <!-- Center: composer + posts -->
+  <div
+    class="order-3 flex min-w-0 flex-1 flex-col gap-3 sm:gap-4 lg:order-2 lg:mx-auto lg:max-w-[720px]"
+  >
+    <app-createpost></app-createpost>
+    <app-posts></app-posts>
+  </div>
+</main>
